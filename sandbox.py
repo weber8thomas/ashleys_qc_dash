@@ -1,46 +1,92 @@
-from dash import Dash, Input, Output, State, dcc, html
+from dash import Dash, dcc, html
+import dash_bootstrap_components as dbc
+import plotly.express as px
 
-# Added
-import flask
-import os
-from flask import Flask
+# Iris bar figure
+def drawFigure():
+    return html.Div(
+        [
+            dbc.Card(
+                dbc.CardBody(
+                    [
+                        dcc.Graph(
+                            figure=px.bar(df, x="sepal_width", y="sepal_length", color="species").update_layout(
+                                template="plotly_dark",
+                                plot_bgcolor="rgba(0, 0, 0, 0)",
+                                paper_bgcolor="rgba(0, 0, 0, 0)",
+                            ),
+                            config={"displayModeBar": False},
+                        )
+                    ]
+                )
+            ),
+        ]
+    )
 
-# Added
-server = Flask(__name__)
-STATIC_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "static")
 
-external_stylesheets = ["https://codepen.io/chriddyp/pen/bWLwgP.css"]
-app = Dash(__name__, external_stylesheets=external_stylesheets, server=server)
+# Text field
+def drawText():
+    return html.Div(
+        [
+            dbc.Card(
+                dbc.CardBody(
+                    [
+                        html.Div(
+                            [
+                                html.H2("Text"),
+                            ],
+                            style={"textAlign": "center"},
+                        )
+                    ]
+                )
+            ),
+        ]
+    )
 
-app.scripts.config.serve_locally = True
+
+# Data
+df = px.data.iris()
+
+# Build App
+app = Dash(external_stylesheets=[dbc.themes.SLATE])
 
 app.layout = html.Div(
     [
-        # html.A("Navigate to google.com", href="http://google.com", target="_blank"),
-        # html.Br(),
-        # html.Img(src="/static/chromosome.png")
-        html.A("Test", href="/static/HJ_MIXTURE_LITE/report.html")
+        dbc.Card(
+            dbc.CardBody(
+                [
+                    dbc.Row(
+                        [
+                            dbc.Col([drawText()], width=3),
+                            dbc.Col([drawText()], width=3),
+                            dbc.Col([drawText()], width=3),
+                            dbc.Col([drawText()], width=3),
+                        ],
+                        align="center",
+                    ),
+                    html.Br(),
+                    dbc.Row(
+                        [
+                            dbc.Col([drawFigure()], width=3),
+                            dbc.Col([drawFigure()], width=3),
+                            dbc.Col([drawFigure()], width=6),
+                        ],
+                        align="center",
+                    ),
+                    html.Br(),
+                    dbc.Row(
+                        [
+                            dbc.Col([drawFigure()], width=3),
+                            dbc.Col([drawFigure()], width=9),
+                        ],
+                        align="center",
+                    ),
+                ]
+            ),
+            color="dark",
+        )
     ]
 )
 
-# Added
-@app.server.route("/static/<resource>")
-def serve_static(resource):
-    return flask.send_from_directory(STATIC_PATH, resource)
-
-
-# STATIC_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static')
-
-# server = Flask(__name__)
-# app = dash.Dash(name = __name__, server = server)
-
-# app.layout = html.Div(
-#    html.Img(src='/static/your_img.jpeg')
-# )
-
-# @app.server.route('/static/<resource>')
-# def serve_static(resource):
-#     return flask.send_from_directory(STATIC_PATH, resource)
-
-if __name__ == "__main__":
-    app.run_server(debug=True, host="seneca.embl.de", port=5500)
+# Run app and display result inline in the notebook
+app.run_server(port=5000)

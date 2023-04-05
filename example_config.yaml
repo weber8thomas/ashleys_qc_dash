@@ -1,0 +1,45 @@
+quality_report_forward:
+  name: FastQC forward
+  type: HTML
+  granularity_level: cell
+  category: QC
+  jbrowse: false
+  outputSource: 'fastqc/{cell}.1.fastqc.html'
+quality_report_reverse:
+  name: FastQC reverse
+  type: HTML
+  granularity_level: cell
+  category: QC
+  jbrowse: false
+  outputSource: 'fastqc/{cell}.2.fastqc.html'
+counts_summary:
+  name: Mosaicatcher binning read counts summary stats
+  type: TSV
+  granularity_level: sample
+  category: QC
+  jbrowse: false
+  outputSource: 'counts/{sample}.info'
+counts:
+  name: Mosaicatcher binning read counts
+  type: BigWig
+  granularity_level: sample
+  category: Annotation
+  outputSource: 'counts/{sample}.bigWig'
+  jbrowse: true
+  jbrowse_config:
+    autoscale: global
+    renderer: xyplot
+    tracks:
+      w:
+        name: Watson
+        color: 'rgb(244, 164, 96)'
+      c:
+        name: Watson
+        color: 'rgb(102, 139, 139)'
+sv_calls:
+  name: Mosaicatcher SV calls
+  type: BED
+  granularity_level: sample
+  category: Annotation
+  outputSource: 'counts/{sample}.bed'
+  jbrowse: true

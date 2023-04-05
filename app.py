@@ -5,10 +5,18 @@ import os, sys
 import pandas as pd
 import plotly.express as px
 import scipy
+import dash_bootstrap_components as dbc
+import dash
 
 
-parent_directory = "/scratch/tweber/DATA/WEB_SERVER_PIPELINE/"
-os.listdir(parent_directory)
+app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP], use_pages=True)
+# app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
+# app = Dash(__name__, external_stylesheets=[dbc.themes.SIMPLEX])
+# app = Dash(__name__, external_stylesheets=[dbc.themes.SKETCHY])
+# app = Dash(__name__, external_stylesheets=[dbc.themes.SLATE])
+
+
+parent_directory = "/scratch/tweber/DATA/MC_DATA/GENECORE_REPROCESSING_2021_2022/"
 
 l = list()
 for run in os.listdir(parent_directory):
@@ -50,7 +58,7 @@ for run in os.listdir(parent_directory):
     for sample in os.listdir(parent_directory + run):
         if sample not in ["config", "log"]:
             if os.path.isfile(parent_directory + run + "/" + sample + "/counts/{sample}.info_raw".format(sample=sample)):
-                print(parent_directory, run, sample)
+                # print(parent_directory, run, sample)
                 tmp_df = pd.read_csv(
                     parent_directory + run + "/" + sample + "/counts/{sample}.info_raw".format(sample=sample), sep="\t", skiprows=13
                 )
@@ -66,6 +74,7 @@ final_df.loc[(final_df["prediction"] == 0) & (final_df["pass1"] == 1), "predicti
 final_df.loc[(final_df["prediction"] == 0) & (final_df["pass1"] == 0), "prediction_status"] = "None"
 final_df["%dupl"] = 100 * (final_df["dupl"] / final_df["mapped"])
 final_df["%dupl"] = final_df["%dupl"].round(2)
+final_df["datetime_creation"] = pd.to_datetime(final_df["datetime_creation"])
 # return final_df
 
 
@@ -89,38 +98,65 @@ df_datatable = final_df[
 barplot_df_mosaic = final_df.groupby(["run-sample", "run", "sample"])["prediction_status"].value_counts().rename("count").reset_index()
 
 
-app = Dash(__name__)
-
-
 # Multiple components can update everytime interval gets fired.
 # @app.callback(Output('example-graph', 'figure'),
 #               Input('interval-component', 'n_intervals')
 #               )
+# Text field
+def drawText():
+    return html.Div(
+        [
+            dbc.Card(
+                dbc.CardBody(
+                    [
+                        html.Div(
+                            [
+                                html.H2("Text"),
+                            ],
+                            style={"textAlign": "center"},
+                        )
+                    ]
+                )
+            ),
+        ]
+    )
 
+
+print([html.Div(dcc.Link(f"{page['name']} - {page['path']}", href=page["relative_path"])) for page in dash.page_registry.values()])
 
 app.layout = html.Div(
     children=[
-        html.H1(children="Hello Dash"),
+        html.Img(src="https://upload.wikimedia.org/wikipedia/en/thumb/b/b1/EMBL_logo.svg/1200px-EMBL_logo.svg.png", width="200"),
         html.Div(
-            children="""
-            Dash: A web application framework for your data.
-        """
+            id="description-card",
+            children=[
+                html.H5("ashleys-qc-pipeline dashboard"),
+                html.Div(
+                    id="intro",
+                    children="Explore clinic patient volume by time of day, waiting time, and care score. Click on the heatmap to visualize patient experience at different time points.",
+                ),
+                dcc.Dropdown(
+                    sorted(df_datatable["run"].unique().tolist()),
+                    sorted(df_datatable["run"].unique().tolist()),
+                    id="run-dropdown",
+                    style={"fontSize": 12, "font-family": "sans-serif"},
+                    multi=True,
+                ),
+                dcc.Dropdown(
+                    # sorted(df_datatable["sample"].unique().tolist()),
+                    value=sorted(df_datatable["sample"].unique().tolist()),
+                    id="sample-dropdown",
+                    style={"fontSize": 12, "font-family": "sans-serif"},
+                    multi=True,
+                ),
+                html.Div(id="dd-output-container"),
+            ],
         ),
-        dcc.Dropdown(
-            sorted(df_datatable["run"].unique().tolist()),
-            sorted(df_datatable["run"].unique().tolist()),
-            id="run-dropdown",
-            style={"fontSize": 12, "font-family": "sans-serif"},
-            multi=True,
+        html.Div(
+            [html.Div(dcc.Link(f"{page['name']} - {page['path']}", href=page["relative_path"])) for page in dash.page_registry.values()]
         ),
-        dcc.Dropdown(
-            # sorted(df_datatable["sample"].unique().tolist()),
-            value=sorted(df_datatable["sample"].unique().tolist()),
-            id="sample-dropdown",
-            style={"fontSize": 12, "font-family": "sans-serif"},
-            multi=True,
-        ),
-        html.Div(id="dd-output-container"),
+        html.Div(dcc.Link("Grafana", href="http://localhost:3000", refresh=True)),
+        dash.page_container,
         dash_table.DataTable(
             id="table-data",
             columns=[{"name": i, "id": i} for i in df_datatable.columns],
@@ -142,6 +178,7 @@ app.layout = html.Div(
             },
         ),
         dcc.Graph(id="graph-bar"),
+        # dcc.Graph(id="graph-violin-good-overtime"),
         dcc.Graph(id="graph-violin-good"),
         dcc.Graph(id="graph-violin-dupl"),
     ]
@@ -155,20 +192,20 @@ def set_sample_options(value):
 
 @app.callback(Output("sample-dropdown", "value"), Input("sample-dropdown", "options"))
 def set_sample_value(value):
-    print(value)
-    print(df_datatable.loc[df_datatable["sample"].isin(value)].sort_values(["run", "sample"])["sample"].unique().tolist())
+    # print(value)
+    # print(df_datatable.loc[df_datatable["sample"].isin(value)].sort_values(["run", "sample"])["sample"].unique().tolist())
     return df_datatable.loc[df_datatable["sample"].isin(value)].sort_values(["run", "sample"])["sample"].unique().tolist()
 
 
 @app.callback(Output("dd-output-container", "children"), Input("sample-dropdown", "value"), Input("run-dropdown", "value"))
 def update_output(sample, run):
-    print(sample)
+    # print(sample)
     return f"You have selected {sample} from {run}"
 
 
 @app.callback(Output("graph-bar", "figure"), Input("sample-dropdown", "value"))
 def update_bar(value):
-    print(barplot_df_mosaic["run-sample"].values.tolist())
+    # print(barplot_df_mosaic["run-sample"].values.tolist())
     return px.bar(
         barplot_df_mosaic.loc[barplot_df_mosaic["sample"].isin(value)].sort_values(by=["run-sample"]),
         x="run-sample",
@@ -176,6 +213,7 @@ def update_bar(value):
         color="prediction_status",
         barmode="stack",
         color_discrete_map={"ashleys + mosaic": "green", "mosaic": "lightgreen", "None": "red"},
+        template="none",
     )
 
 
@@ -189,6 +227,7 @@ def update_bar(value):
         color="run",
         hover_data=["cell"],
         box=True,
+        template="none",
     )
 
 
@@ -202,7 +241,23 @@ def update_bar(value):
         color="run",
         hover_data=["cell"],
         box=True,
+        template="none",
     )
+
+
+# @app.callback(Output("graph-violin-good-overtime", "figure"), Input("sample-dropdown", "value"))
+# def update_bar(value):
+#     print(value)
+#     return px.violin(
+#         final_df.loc[(final_df["prediction"] == 1) & (final_df["sample"].isin(value))].sort_values(["datetime_creation", "sample", "cell"]),
+#         x="datetime_creation",
+#         y="good",
+#         color="sample",
+#         box=True,
+#         points="all",
+#         hover_data=["cell"],
+#         template="none",
+#     )
 
 
 @app.callback(Output("table-data", "data"), Input("sample-dropdown", "value"))
