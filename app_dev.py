@@ -118,4 +118,4 @@ app.layout = html.Div(
 )
 
 if __name__ == "__main__":
-    app.run_server(debug=True, host="seneca.embl.de", port=5000)
+    app.run_server(debug=True, host="seneca.embl.de", port=5100)
