@@ -12,6 +12,7 @@ import plotly.express as px
 # app = dash.Dash(__name__)
 dash.register_page(__name__, path="/")
 
+
 # HEADER PART
 def Header(title, subtitle):
     title = html.H2(title, style={"margin-top": 5}, className="display-4")
@@ -69,6 +70,9 @@ for run in os.listdir(parent_directory):
                 tmp_df["group"] = Path(file_path).group()
                 tmp_df["datetime_modified"] = dt_m
                 tmp_df["datetime_creation"] = dt_c
+                if sample == "LanexBuesraKM1080":
+                    print("LanexBuesraKM1080")
+                    print(tmp_df)
                 l.append(tmp_df)
 
 # CONCAT LABELS INTO A SINGLE DF
@@ -276,6 +280,7 @@ layout = dbc.Container(
                 "textOverflow": "ellipsis",
                 "overflow": "hidden",
             },
+            export_format="xlsx",
         ),
         # dbc.Row([dbc.Col(graph) for graph in graphs]),
         # dash.page_container,
@@ -295,14 +300,14 @@ def set_year_options(value):
 # RUN DROPDOWN OPTIONS TO RUN DROPDOWN VALUE
 @dash.callback(Output("run-dropdown", "value"), Input("run-dropdown", "options"))
 def set_run_options(value):
-    print(value)
+    # print(value)
     return value
 
 
 # RUN DROPDOWN VALUE TO SAMPLE DROPDOWN OPTIONS
 @dash.callback(Output("sample-dropdown", "options"), Input("run-dropdown", "value"))
 def set_sample_options(value):
-    print(value)
+    # print(value)
     return df_datatable.loc[df_datatable["run"].isin(value)].sort_values(["run", "sample"])["sample"].unique().tolist()
 
 
@@ -313,6 +318,7 @@ def set_sample_value(value):
 
 
 ########
+
 
 # Datatable callback
 @dash.callback(Output("table-data", "data"), Input("sample-dropdown", "value"))
@@ -334,7 +340,19 @@ def update_plot(value):
         height=500,
     )
     fig.update_xaxes(tickangle=45, tickfont=dict(size=6), ticksuffix="                ", title_text="")
-    fig.update_layout(yaxis_range=[0, 96])
+    # fig.update_layout(yaxis_range=[0, 96])
+    # print(barplot_df_mosaic.loc[barplot_df_mosaic["sample"].isin(value)].groupby("sample").value_counts().reset_index().groupby("sample")["count"].sum())
+    fig.update_layout(
+        yaxis_range=[
+            0,
+            barplot_df_mosaic.loc[barplot_df_mosaic["sample"].isin(value)]
+            .groupby("sample")
+            .value_counts()
+            .reset_index()
+            .groupby("sample")["count"]
+            .sum(),
+        ]
+    )
     return fig
 
 

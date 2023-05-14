@@ -39,42 +39,42 @@ sidebar = html.Div(
         dbc.Nav(
             [
                 dbc.NavLink("Dash home page", href="/", active="exact"),
-                dbc.NavLink("Grafana home page", href="http://localhost:3000", active="exact"),
+                # dbc.NavLink("Grafana home page", href="http://localhost:3000", active="exact"),
             ],
             vertical=True,
             pills=True,
         ),
-        html.Hr(),
-        html.P("Bio-related components", className="lead"),
-        dbc.Nav(
-            [
-                dbc.NavLink("Dash-Jbrowse2", href="/jbrowse-example", active="exact"),
-                dbc.NavLink("Dash-ideogram", href="https://dash.gallery/dash-ideogram/", active="exact"),
-                dbc.NavLink("Dash-Circos", href="https://dash.gallery/dash-circos/", active="exact"),
-            ],
-            vertical=True,
-            pills=True,
-        ),
-        html.Hr(),
-        html.P("HTML reports integration", className="lead"),
-        dbc.Nav(
-            [
-                # dbc.NavLink("Grafana", href="https://play.grafana.org/d/000000012/grafana-play-home?orgId=1", active="exact"),
-                dbc.NavLink("Snakemake report", href="/snakemake-report", active="exact"),
-                dbc.NavLink("MultiQC report", href="/multiqc-report", active="exact"),
-            ],
-            vertical=True,
-            pills=True,
-        ),
-        html.Hr(),
-        html.P("Preconfigured Jup NB", className="lead"),
-        dbc.Nav(
-            [
-                dbc.NavLink("Jupyter-Notebook", href="http://localhost:5500", active="exact"),
-            ],
-            vertical=True,
-            pills=True,
-        ),
+        # html.Hr(),
+        # html.P("Bio-related components", className="lead"),
+        # dbc.Nav(
+        #     [
+        #         dbc.NavLink("Dash-Jbrowse2", href="/jbrowse-example", active="exact"),
+        #         dbc.NavLink("Dash-ideogram", href="https://dash.gallery/dash-ideogram/", active="exact"),
+        #         dbc.NavLink("Dash-Circos", href="https://dash.gallery/dash-circos/", active="exact"),
+        #     ],
+        #     vertical=True,
+        #     pills=True,
+        # ),
+        # html.Hr(),
+        # html.P("HTML reports integration", className="lead"),
+        # dbc.Nav(
+        #     [
+        #         # dbc.NavLink("Grafana", href="https://play.grafana.org/d/000000012/grafana-play-home?orgId=1", active="exact"),
+        #         dbc.NavLink("Snakemake report", href="/snakemake-report", active="exact"),
+        #         dbc.NavLink("MultiQC report", href="/multiqc-report", active="exact"),
+        #     ],
+        #     vertical=True,
+        #     pills=True,
+        # ),
+        # html.Hr(),
+        # html.P("Preconfigured Jup NB", className="lead"),
+        # dbc.Nav(
+        #     [
+        #         dbc.NavLink("Jupyter-Notebook", href="http://localhost:5500", active="exact"),
+        #     ],
+        #     vertical=True,
+        #     pills=True,
+        # ),
     ],
     style=SIDEBAR_STYLE,
 )
