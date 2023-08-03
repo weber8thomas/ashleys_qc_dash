@@ -240,6 +240,22 @@ layout = dbc.Container(
                 ),
             ]
         ),
+        html.Hr(),
+        html.H2("Choose your grouping method", className="card-title"),
+        html.Div(
+            [
+                dbc.RadioItems(
+                    options=[
+                        {"label": "Run", "value": "run"},
+                        {"label": "Sample", "value": "sample"},
+                    ],
+                    id="radioitems-inline-input",
+                    value="run",
+                    inline=True,
+                ),
+            ]
+        ),
+        html.Hr(),
         html.Br(),
         html.Br(),
         html.Br(),
@@ -357,8 +373,8 @@ def update_plot(value):
 
 
 # Reads violin
-@dash.callback(Output("graph-violin-good", "figure"), Input("sample-dropdown", "value"))
-def update_plot(value):
+@dash.callback(Output("graph-violin-good", "figure"), Input("sample-dropdown", "value"), Input("radioitems-inline-input", "value"))
+def update_plot(value, group):
     final_df_tmp = final_df.loc[(final_df["prediction"] == 1) & (final_df["sample"].isin(value)) & (final_df["good"] < 2e6)].sort_values(
         by=["run-sample"]
     )
@@ -367,7 +383,7 @@ def update_plot(value):
         x="sample",
         y="good",
         points="all",
-        color="run",
+        color=group,
         hover_data=["cell"],
         box=True,
         template="none",
@@ -379,15 +395,15 @@ def update_plot(value):
 
 
 # Duplicates violin
-@dash.callback(Output("graph-violin-dupl", "figure"), Input("sample-dropdown", "value"))
-def update_plot(value):
+@dash.callback(Output("graph-violin-dupl", "figure"), Input("sample-dropdown", "value"), Input("radioitems-inline-input", "value"))
+def update_plot(value, group):
     # final_df_tmp = final_df.loc[~final_df.loc["sample"].isin(samples_to_remove)]
     fig = px.violin(
         final_df.loc[(final_df["prediction"] == 1) & (final_df["sample"].isin(value))].sort_values(by=["run-sample"]),
         x="sample",
         y="%dupl",
         points="all",
-        color="run",
+        color=group,
         hover_data=["cell"],
         box=True,
         template="none",
