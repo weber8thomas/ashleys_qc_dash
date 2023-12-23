@@ -4,8 +4,8 @@ from dash import html
 
 
 print(dash_jbrowse.__version__)
-# app = dash.Dash(__name__)
-dash.register_page(__name__)
+app = dash.Dash(__name__)
+# dash.register_page(__name__)
 
 my_assembly = {
     "name": "GRCh38",
@@ -316,8 +316,8 @@ my_theme = {
         },
     },
 }
-# app.layout = html.Div(
-layout = html.Div(
+app.layout = html.Div(
+# layout = html.Div(
     [
         dash_jbrowse.LinearGenomeView(
             id="lgv-hg38",
@@ -332,5 +332,5 @@ layout = html.Div(
     id="test",
 )
 
-# if __name__ == "__main__":
-#     app.run_server(port=5500, host="localhost", debug=True)
+if __name__ == "__main__":
+    app.run_server(port=5500, host="localhost", debug=True)
