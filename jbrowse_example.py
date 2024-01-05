@@ -134,17 +134,40 @@ my_tracks_counts = [
 ]
 
 my_tracks_sv = [
-    {
-        "type": "FeatureTrack",
-        "trackId": "test_sv.bed-sessionTrack",
-        "name": "test_sv.bed",
-        "assemblyNames": ["GRCh38"],
-        "adapter": {
-            "type": "BedAdapter",
-            "bedLocation": {"uri": app.get_asset_url("test_sv.bed")},
-        },
-    }
-    for e in sorted(listdir_counts)
+{
+    "type": "FeatureTrack",
+    "trackId": "BM510x04_PE20301-SV",
+    "name": "BM510x04_PE20301-SV",
+    "assemblyNames": ["GRCh38"],
+    "category": [
+        "Run X",
+        "Sample BM510",
+        "SV calls"
+      ],
+    "adapter": {
+      "type": "BedTabixAdapter",
+      "bedGzLocation": {
+        "locationType": "UriLocation",
+        "uri": "http://127.0.0.1:9000/depictio-bucket/BM510x04_PE20301-SV.bed.gz"
+      },
+      "index": {
+        "location": {
+          "locationType": "UriLocation",
+          "uri": "http://127.0.0.1:9000/depictio-bucket/BM510x04_PE20301-SV.bed.gz.tbi"
+        }
+      }
+    },
+    "displays": [
+      {
+        "type": "LinearBasicDisplay",
+        "displayId": "BM510x04_PE20301-SV-LinearBasicDisplay",
+        "renderer": {
+          "type": "SvgFeatureRenderer",
+          "color1": "jexl:get(feature,\"field4\")"
+        }
+      }
+    ]
+  }
 ]
 
 my_tracks += my_tracks_counts
@@ -152,43 +175,43 @@ my_tracks += my_tracks_sv
 
 
 tracks_session = [
-    {
-        "type": "FeatureTrack",
-        "configuration": "ncbi_refseq_109_hg38",
-        "displays": [
-            {
-                "type": "LinearBasicDisplay",
-                "configuration": "ncbi_refseq_109_hg38-LinearBasicDisplay",
-                "trackShowDescriptions": False,
-            },
-        ],
-    },
-    {
-        "type": "QuantitativeTrack",
-        "configuration": "gccontent_hg38",
-        "displays": [
-            {
-                "id": "lTY7_5KzL6",
-                "type": "LinearWiggleDisplay",
-                "height": 100,
-                "selectedRendering": "",
-                "rendererTypeNameState": "xyplot",
-                "displayCrossHatches": True,
-                "layout": [
-                    {
-                        "name": "Watson",
-                        "type": "GCContentAdapter",
-                        "color": "red",
-                    },
-                ],
-            },
-        ],
-    },
-    {
-        "type": "VariantTrack",
-        "configuration": "clinvar.vcf.gz-1675786941544-sessionTrack",
-        "displays": [{"type": "LinearVariantDisplay", "displayId": "clinvar.vcf.gz-1675786941544-sessionTrack-LinearVariantDisplay"}],
-    },
+    # {
+    #     "type": "FeatureTrack",
+    #     "configuration": "ncbi_refseq_109_hg38",
+    #     "displays": [
+    #         {
+    #             "type": "LinearBasicDisplay",
+    #             "configuration": "ncbi_refseq_109_hg38-LinearBasicDisplay",
+    #             "trackShowDescriptions": False,
+    #         },
+    #     ],
+    # },
+    # {
+    #     "type": "QuantitativeTrack",
+    #     "configuration": "gccontent_hg38",
+    #     "displays": [
+    #         {
+    #             "id": "lTY7_5KzL6",
+    #             "type": "LinearWiggleDisplay",
+    #             "height": 100,
+    #             "selectedRendering": "",
+    #             "rendererTypeNameState": "xyplot",
+    #             "displayCrossHatches": True,
+    #             "layout": [
+    #                 {
+    #                     "name": "Watson",
+    #                     "type": "GCContentAdapter",
+    #                     "color": "red",
+    #                 },
+    #             ],
+    #         },
+    #     ],
+    # },
+    # {
+    #     "type": "VariantTrack",
+    #     "configuration": "clinvar.vcf.gz-1675786941544-sessionTrack",
+    #     "displays": [{"type": "LinearVariantDisplay", "displayId": "clinvar.vcf.gz-1675786941544-sessionTrack-LinearVariantDisplay"}],
+    # },
 ]
 
 
@@ -230,27 +253,45 @@ tracks_session_counts = [
 ]
 
 tracks_session_svs = [
-    {
-        "type": "FeatureTrack",
-        "configuration": "test_sv.bed-sessionTrack",
-        "displays": [
-            {
-                "displayId": "test_sv.bed-sessionTrack-LinearBasicDisplay",
-                "type": "LinearBasicDisplay",
-                "trackShowDescriptions": False,
-                "trackDisplayMode": "collapse",
-                "renderer": {
-                    "type": "SvgFeatureRenderer",
-                    "color1": "jexl:cast({ inv_h2: 'green', del_hom: 'purple' })[get(feature, 'name')]",
-                    "displayMode": "collapse",
-                },
-            },
-        ],
+{
+    "type": "FeatureTrack",
+    "trackId": "BM510x04_PE20301-SV",
+    "name": "BM510x04_PE20301-SV",
+        "assemblyNames": ["GRCh38"],
+
+    "category": [
+        "Run X",
+        "Sample BM510",
+        "SV calls"
+      ],
+    "adapter": {
+      "type": "BedTabixAdapter",
+      "bedGzLocation": {
+        "locationType": "UriLocation",
+        "uri": "http://127.0.0.1:9000/depictio-bucket/BM510x04_PE20301-SV.bed.gz"
+      },
+      "index": {
+        "location": {
+          "locationType": "UriLocation",
+          "uri": "http://127.0.0.1:9000/depictio-bucket/BM510x04_PE20301-SV.bed.gz.tbi"
+        }
+      }
     },
+    "displays": [
+      {
+        "type": "LinearBasicDisplay",
+        "displayId": "BM510x04_PE20301-SV-LinearBasicDisplay",
+        "renderer": {
+          "type": "SvgFeatureRenderer",
+          "color1": "jexl:get(feature,\"field4\")"
+        }
+      }
+    ]
+  }
 ]
 
 tracks_session += tracks_session_counts
-tracks_session += tracks_session_svs
+# tracks_session += tracks_session_svs
 print(tracks_session)
 
 
